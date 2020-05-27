@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Image, Text, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Text, TextInput, KeyboardAvoidingView, Header } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
+
 
 
 import api from '../services/api';
@@ -14,6 +15,7 @@ function Main({ navigation }) {
     const [currentRegion, setCurrentRegion] = useState(null);
     const [searchValue, setSearchValue ] = useState('');
     const [students, setStudents] = useState([]);
+    const [menuIcon, setMenuIcon] = useState('menu');
 
     useEffect( () => {
         (
@@ -74,14 +76,7 @@ function Main({ navigation }) {
 
     return (
         <>
-            <View>
-                <TouchableOpacity
-                    style={styles.buttonHome}
-                    onPress={() => navigation.navigate('Profile')}
-                >
-                    <MaterialIcons name="home" size={30} color="#fff"/>
-                </TouchableOpacity>
-            </View>
+            
             <MapView 
                 onRegionChangeComplete={handleRegionChanged} 
                 initialRegion={currentRegion} 
@@ -120,7 +115,31 @@ function Main({ navigation }) {
                     )
                 }  
             </MapView>
-
+            
+            <View style={styles.header}>
+                <View
+                    style={styles.buttonHome}
+                >
+                    <TouchableOpacity>
+                        <MaterialIcons 
+                            name={menuIcon}
+                            size={30} 
+                            style={styles.bars}
+                            onPress={ () => {
+                                navigation.openDrawer();
+                                setMenuIcon('clear');
+                                setTimeout( () => setMenuIcon('menu'), 200 );
+                            } }
+                        />
+                    </TouchableOpacity>
+                    <Text>
+                        <MaterialIcons style={styles.logo} name="home" size={30} color="#f22"/>
+                    </Text>
+                    <Text>
+                        <MaterialIcons style={styles.logo} name="home" size={30} color="#ff1"/>
+                    </Text>
+                </View>
+            </View>
             <View style={styles.form}>
                 <TextInput 
                     style={styles.searchInput}
@@ -146,11 +165,25 @@ function Main({ navigation }) {
 export default Main;
 
 const styles = StyleSheet.create({
-    
+    bars : {
+        color : '#fff',
+    },
+    header : {
+        position : 'absolute',
+        top : 0,
+        left : 0,
+        zIndex : 5,
+        flexDirection : 'row',
+    },
     buttonHome: {
-        backgroundColor : 'rgba(20, 70, 200, 1)',
+        backgroundColor : '#00008B',
         flex: 1,
-        borderColor : 'rgba(0,0,0,0)'
+        alignItems : 'center',
+        justifyContent : 'space-between',
+        height : 50,
+        borderColor : 'rgba(0,0,0,0)',
+        padding : 10,
+        flexDirection : 'row',
     },
     buttonSearch : {
         borderRadius : 25,
@@ -173,7 +206,7 @@ const styles = StyleSheet.create({
     },
     form : {
         position : 'absolute',
-        top : 20,
+        top : 58,
         left : 20,
         right : 20,
         zIndex : 5,
